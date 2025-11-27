@@ -4,7 +4,7 @@
 #include <utils/types.h>
 
 typedef void * (*list_allocator_t)(size_t size);
-typedef void * (*list_free_t)(void * ptr);
+typedef void (*list_free_t)(void * ptr);
 typedef int (*list_compare_t)(void * a, void * b);
 
 typedef struct linked_list_node {

@@ -4,7 +4,7 @@
 #include <utils/types.h>
 
 typedef void * (*cb_allocator_t)(size_t size);
-typedef void * (*cb_free_t)(void * ptr);
+typedef void (*cb_free_t)(void * ptr);
 
 typedef struct circular_buffer {
     void * buffer;

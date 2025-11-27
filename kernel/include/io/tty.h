@@ -24,6 +24,7 @@ typedef struct tty {
 } tty_t;
 
 tty_t * tty_create();
+void tty_destroy(tty_t * tty);
 
 void tty_putchar(tty_t * tty, char c);
 void tty_flush(tty_t * tty);

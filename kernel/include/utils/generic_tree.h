@@ -4,7 +4,7 @@
 #include <utils/types.h>
 
 typedef void * (*tree_allocator_t)(size_t size);
-typedef void * (*tree_free_t)(void * ptr);
+typedef void (*tree_free_t)(void * ptr);
 typedef int (*tree_compare_t)(void * a, void * b);
 
 typedef struct generic_node_t {

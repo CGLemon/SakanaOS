@@ -29,7 +29,7 @@ shell_t * shell_create(tty_t * tty) {
 }
 
 void shell_destroy(shell_t * s) {
-    linked_list_destroy(s->commands_list, kfree);
+    linked_list_destroy(s->commands_list, true, kfree);
     kfree(s);
 }
 
