@@ -20,7 +20,7 @@ typedef struct shell_command {
     shell_command_call_t call;
 } shell_command_t;
 
-shell_t * shell_create();
+shell_t * shell_create(tty_t * tty);
 void shell_destroy(shell_t * s);
 
 void shell_init(shell_t * s, tty_t * tty);
