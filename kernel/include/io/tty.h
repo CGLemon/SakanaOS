@@ -18,9 +18,8 @@ typedef struct tty {
     uint8_t bgcolor;
     circular_buffer_t * input;
     circular_buffer_t * output;
-    // video_device_t * video;
+    video_device_t * video;
     keyboard_device_t * keyboard;
-    // tty_keyboard_layout_t * layout;
 } tty_t;
 
 tty_t * tty_create();

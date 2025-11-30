@@ -53,12 +53,14 @@ char stream_getchar(stream_t * s) {
     if (s && s->getchar) {
         return s->getchar(s);
     }
+    return '\0';
 }
 
 char * stream_gets(stream_t * s) {
     if (s && s->gets) {
         return s->gets(s);
     }
+    return NULL;
 }
 
 int stream_printf(stream_t * s, const char *format, ...) {
@@ -72,6 +74,7 @@ int stream_printf(stream_t * s, const char *format, ...) {
 
 int stream_vprintf(stream_t * s, const char * fmt, va_list args) {
     int count = 0;
+    char * src;
     while (*fmt) {
         if (*fmt == '%') {
             fmt++;
@@ -87,7 +90,7 @@ int stream_vprintf(stream_t * s, const char * fmt, va_list args) {
                     count += stream_putfloat(s, va_arg(args, double), 6);
                     break;
                 case 's':
-                    char * src = va_arg(args, char *);
+                    src = va_arg(args, char *);
                     while (*src != '\0') {
                         stream_putchar(s, *src);
                         count++;

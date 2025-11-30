@@ -6,13 +6,14 @@
 #include <utils/linked_list.h>
 
 typedef struct shell {
+    tty_t * tty;
     stream_t * in_stream;
     stream_t * out_stream;
     stream_t * err_stream;
     linked_list_t  * commands_list;
 } shell_t;
 
-typedef void (* shell_command_call_t)(shell_t *);
+typedef int (* shell_command_call_t)(shell_t *, int argc, char ** argv);
 
 typedef struct shell_command {
     char * name;
@@ -25,6 +26,6 @@ void shell_destroy(shell_t * s);
 void shell_init(shell_t * s, tty_t * tty);
 void shell_execute(shell_t * s);
 void shell_register_command(shell_t * s, char * name, shell_command_call_t call);
-void shell_execute_command(shell_t * s, char * name);
+void shell_execute_command(shell_t * s, char * inputs);
 
 #endif

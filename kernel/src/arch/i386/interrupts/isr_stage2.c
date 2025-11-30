@@ -54,14 +54,16 @@ void isr_stage2(isr_cpu_state_t * state) {
         }
 	}
 
+/*
     if (listener == ISR_NULL_LISTENER &&
             32 > state->interrupt_code &&
             0x80 != state->interrupt_code) {
         // TODO: system call
     }
+ */
 }
 
-uint32_t isr_register_listener(isr_interrupt_t selector, isr_interrupt_listener_t listener) {
+int isr_register_listener(isr_interrupt_t selector, isr_interrupt_listener_t listener) {
     if (ISR_MAX_INTERRUPT_LISTENERS <= selector) {
         return -1;
     }
@@ -70,7 +72,7 @@ uint32_t isr_register_listener(isr_interrupt_t selector, isr_interrupt_listener_
     return 0;
 }
 
-uint32_t isr_unregister_listener(isr_interrupt_t selector) {
+int isr_unregister_listener(isr_interrupt_t selector) {
     if (ISR_MAX_INTERRUPT_LISTENERS <= selector) {
         return -1;
     }

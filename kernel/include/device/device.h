@@ -2,9 +2,11 @@
 #define _KERNEL_DEVICE_DEVICE_H
 
 #include <utils/types.h>
+#include <utils/linked_list.h>
 #include <device/uuid.h>
 #include <device/keyboard.h>
 #include <device/video.h>
+#include <device/storage.h>
 
 // Bus types
 
@@ -32,7 +34,7 @@ typedef struct device {
     uuid_t id;
     char * name;
     uint16_t type;
-    struct bus bus;
+    but_t bus;
 } __attribute__((packed)) device_t;
 
 typedef struct keyboard_device {
@@ -45,10 +47,18 @@ typedef struct video_device {
     video_driver_t * driver;
 } __attribute__((packed)) video_device_t;
 
+typedef struct storage_device {
+    device_t info;
+    storage_driver_t * driver;
+} __attribute__((packed)) storage_device_t;
+
 void device_init();
 
 int device_register(device_t * device);
+int device_register_at(device_t * device, device_t * parent);
 int device_unregister(device_t * device);
 const device_t * device_find_by_type(uint16_t type);
+linked_list_t * device_find_all_by_type(uint16_t type);
+linked_list_t * device_find_all_by_bustype(uint8_t type);
 
 #endif

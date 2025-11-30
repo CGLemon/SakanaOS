@@ -132,7 +132,8 @@ extern void syscall();
 
 void clear_interrupt_flag();
 void set_interrupt_flag();
-uint32_t isr_register_listener(isr_interrupt_t selector, isr_interrupt_listener_t listener);
-uint32_t isr_unregister_listener(isr_interrupt_t selector);
+void isr_interrupt(int i);
+int isr_register_listener(isr_interrupt_t selector, isr_interrupt_listener_t listener);
+int isr_unregister_listener(isr_interrupt_t selector);
 
 #endif

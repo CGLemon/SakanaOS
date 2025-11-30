@@ -2,7 +2,6 @@
 #define _KERNEL_MEMORY_HEAP_H
 
 #include <utils/types.h>
-#include <io/stream.h>
 
 #define KHEAP_PLACEMENT_SIZE 0x00100000
 #define KHEAP_HEAP_SIZE      0x02000000
@@ -21,7 +20,8 @@ typedef struct kheap_block_head {
 } kheap_block_head_t;
 
 void kheap_init();
-void kheap_dump(stream_t * s);
+bool kheap_is_enabled();
+kheap_block_head_t * kheap_get_heap_head();
 
 void * kmalloc(size_t size);
 void * kmalloc_flag(size_t size, uint32_t flag);

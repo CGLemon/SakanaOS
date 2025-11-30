@@ -273,6 +273,6 @@ typedef struct keyboard_driver {
     void (*register_listener)(keyboard_listener_t listener);
 } keyboard_driver_t;
 
-char keyboard_transfer_scancode(uint32_t scancode, keyboard_event_t * event);
+void keyboard_transfer_scancode(uint32_t scancode, keyboard_event_t * event);
 
 #endif

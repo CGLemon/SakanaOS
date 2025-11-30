@@ -25,7 +25,7 @@ void ps2_keyboard_interrupt_handler(isr_cpu_state_t * state) {
     }
 }
 
-int32_t ps2_keyboard_init() {
+int ps2_keyboard_init() {
     keyboard_device_t * device = (keyboard_device_t *)kmalloc(sizeof(keyboard_device_t));
     if (!device) {
         KPANIC(KPANIC_OUT_OF_MEMORY, "Memory allocation failed.", NULL);
@@ -57,5 +57,6 @@ int32_t ps2_keyboard_init() {
 
     // Enable keyboard scanning
     port_byte_out(PS2_DATA_REGISTER, 0xF4);
+    return 0;
 }
 

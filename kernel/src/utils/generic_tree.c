@@ -1,9 +1,9 @@
 #include <utils/generic_tree.h>
 
-void _generic_tree_destroy_recursive(generic_node_t * node,
+void _generic_tree_destroy_recursive(generic_tree_node_t * node,
                                      bool free_data, tree_free_t deallocator);
-generic_node_t * _generic_tree_find_recursive(generic_node_t * node,
-                                              void * data, tree_compare_t comp);
+generic_tree_node_t * _generic_tree_find_recursive(generic_tree_node_t * node,
+                                                   void * data, tree_compare_t comp);
 
 generic_tree_t * generic_tree_create(tree_allocator_t allocator) {
     generic_tree_t * tree = (generic_tree_t *)allocator(sizeof(generic_tree_t));
@@ -15,23 +15,24 @@ generic_tree_t * generic_tree_create(tree_allocator_t allocator) {
     return tree;
 }
 
-generic_node_t * generic_node_create(void * data, tree_allocator_t allocator) {
-    generic_node_t * node = (generic_node_t *)allocator(sizeof(generic_node_t));
+generic_tree_node_t * generic_tree_node_create(void * data, tree_allocator_t allocator) {
+    generic_tree_node_t * node =
+        (generic_tree_node_t *)allocator(sizeof(generic_tree_node_t));
     if (!node) {
         return NULL;
     }
-    generic_node_init(node, data);
+    generic_tree_node_init(node, data);
 
     return node;
 }
 
-void _generic_tree_destroy_recursive(generic_node_t * node,
+void _generic_tree_destroy_recursive(generic_tree_node_t * node,
                                      bool free_data, tree_free_t deallocator) {
     if (node->child) {
-        generic_node_t * curr = node->child;
+        generic_tree_node_t * curr = node->child;
 
         while (curr) {
-            generic_node_t * slide = curr->slide;
+            generic_tree_node_t * slide = curr->slide;
             _generic_tree_destroy_recursive(curr, free_data, deallocator);
             curr = slide;
         }
@@ -62,7 +63,7 @@ void generic_tree_init(generic_tree_t * tree) {
     }
 }
 
-void generic_node_init(generic_node_t * node, void * data) {
+void generic_tree_node_init(generic_tree_node_t * node, void * data) {
     if (node) {
         node->parent = NULL;
         node->slide = NULL;
@@ -71,7 +72,7 @@ void generic_node_init(generic_node_t * node, void * data) {
     }
 }
 
-void generic_tree_insert(generic_node_t * parent, generic_node_t * node) {
+void generic_tree_insert(generic_tree_node_t * parent, generic_tree_node_t * node) {
     if (!parent || !node) {
         return;
     }
@@ -79,7 +80,7 @@ void generic_tree_insert(generic_node_t * parent, generic_node_t * node) {
     if (!parent->child) {
         parent->child = node;
     } else {
-        generic_node_t * last = parent->child;
+        generic_tree_node_t * last = parent->child;
         while (last->slide) {
             last = last->slide;
         }
@@ -88,15 +89,15 @@ void generic_tree_insert(generic_node_t * parent, generic_node_t * node) {
     node->parent = parent;
 }
 
-void generic_tree_remove(generic_tree_t * tree, generic_node_t * node) {
+void generic_tree_remove(generic_tree_t * tree, generic_tree_node_t * node) {
     if (!tree || !node) {
         return;
     }
 
-    generic_node_t * parent = node->parent;
+    generic_tree_node_t * parent = node->parent;
     if (parent) {
-        generic_node_t * prev = parent->child;
-        generic_node_t * next = node->slide;
+        generic_tree_node_t * prev = parent->child;
+        generic_tree_node_t * next = node->slide;
 
         if (prev == node) {
             parent->child = next;
@@ -114,8 +115,8 @@ void generic_tree_remove(generic_tree_t * tree, generic_node_t * node) {
     node->slide = NULL;
 }
 
-generic_node_t * _generic_tree_find_recursive(generic_node_t * node,
-                                              void * data, tree_compare_t comp) {
+generic_tree_node_t * _generic_tree_find_recursive(generic_tree_node_t * node,
+                                                   void * data, tree_compare_t comp) {
     if (!node || !data) {
         return NULL;
     }
@@ -125,10 +126,10 @@ generic_node_t * _generic_tree_find_recursive(generic_node_t * node,
     }
 
     if (node->child) {
-        generic_node_t * curr = node->child;
+        generic_tree_node_t * curr = node->child;
 
         while (curr) {
-            generic_node_t * result =
+            generic_tree_node_t * result =
                 _generic_tree_find_recursive(curr, data, comp);
             if (result) {
                 return result;
@@ -140,10 +141,38 @@ generic_node_t * _generic_tree_find_recursive(generic_node_t * node,
     return NULL;
 }
 
-generic_node_t * generic_tree_find(generic_tree_t * tree,
-                                   void * data, tree_compare_t comp) {
+generic_tree_node_t * generic_tree_find(generic_tree_t * tree,
+                                        void * data, tree_compare_t comp) {
     if (tree && tree->root) {
         return _generic_tree_find_recursive(tree->root, data, comp);
     }
     return NULL;
+}
+
+void _generic_tree_callback_foreach_recursive(generic_tree_node_t * node,
+                                              tree_callback_t callback,
+                                              void * userdata) {
+    if (!node) {
+        return;
+    }
+
+    callback(node, userdata);
+
+    if (node->child) {
+       generic_tree_node_t * curr = node->child;
+
+        while (curr) {
+            _generic_tree_callback_foreach_recursive(
+                curr, callback, userdata);
+            curr =  curr->slide;
+        }
+    }
+}
+
+void generic_tree_callback_foreach(generic_tree_t * tree,
+                                   tree_callback_t callback,
+                                   void * userdata) {
+    if (tree) {
+        _generic_tree_callback_foreach_recursive(tree->root, callback, userdata);
+    }
 }

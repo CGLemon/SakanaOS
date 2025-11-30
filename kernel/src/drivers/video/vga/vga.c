@@ -12,6 +12,9 @@ static vga_state_t * vga_state = NULL;
 int vga_get_offset();
 uint8_t vga_get_attri(vga_color_t fg, vga_color_t bg);
 
+bool vga_probe();
+bool vga_tm_probe();
+
 void vga_setpos(int x, int y);
 void vga_setchar(char c);
 void vga_nextpos(char c);
@@ -38,7 +41,7 @@ void vga_init(vga_video_mode_t mode) {
     if (mode == VGA_80x25_16_TEXT) {
         vga_state->width = 80;
         vga_state->height = 25;
-        vga_state->buffer = (uint8_t *)VGA_MEMORY;
+        vga_state->buffer = (uint8_t *)VGA_TM_VIDEO_MEMORY;
         vga_state->attri = vga_get_attri(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
         vga_state->cursor_enabled = true;
         vga_state->x = 0;
@@ -70,6 +73,7 @@ void vga_init(vga_video_mode_t mode) {
     }
 
     device->driver = driver;
+    device->driver->tm_probe = vga_tm_probe;
     device->driver->tm.get_width = vga_get_width;
     device->driver->tm.get_height = vga_get_height;
     device->driver->tm.write = vga_write;
@@ -82,6 +86,16 @@ void vga_init(vga_video_mode_t mode) {
  
     vga_enable_cursor(0, 15);
     vga_clean_screen();
+}
+
+bool vga_probe() {
+    uint8_t dummy = 0x0F;
+    port_byte_out(VGA_GC_ADDRESS_REGISTER_PORT, dummy);
+    return port_byte_in(VGA_GC_ADDRESS_REGISTER_PORT) == dummy;
+}
+
+bool vga_tm_probe() {
+    return vga_state != NULL && vga_state->mode == VGA_80x25_16_TEXT;
 }
 
 size_t vga_get_width() {

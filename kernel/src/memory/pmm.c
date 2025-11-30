@@ -48,7 +48,8 @@ void pmm_init(multiboot_info_t * multiboot_info) {
     char kernel_message[96];
     size_t num_frames =  pmm_memory.num_memory_frames - pmm_memory.num_memory_frames_used;
     size_t memory_size = pmm_memory.memory_size;
-    sprintf(kernel_message, "memory: PMM initialized with %d (%f MB) memory frames", num_frames, memory_size / 1024.0 / 1024.0);
+    sprintf(kernel_message, "memory: PMM initialized with %d (%d MB) memory frames",
+                num_frames, memory_size / 1024 / 1024);
     kmessage(KMESSAGE_LEVEL_INFO, kernel_message);
 }
 

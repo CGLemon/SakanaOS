@@ -21,7 +21,6 @@ char tty_stream_getchar(stream_t* stream);
 void tty_stream_puts(stream_t* stream, const char * str);
 char * tty_stream_gets(stream_t* stream);
 
-
 void tty_set_stdterm(tty_t * tty) {
     tty_stdterm = tty;
 }
@@ -51,6 +50,8 @@ tty_t * tty_create() {
     tty->keyboard = (keyboard_device_t *)device_find_by_type(DEVICE_TYPE_KEYBOARD);
     tty->keyboard->driver->register_listener(tty_keyboard_listener);
 
+    tty->video = (video_device_t *)device_find_by_type(DEVICE_TYPE_VIDEO);
+
     return tty;
 }
 
@@ -70,12 +71,12 @@ void tty_keyboard_listener(keyboard_event_t * event)  {
 }
 
 char * tty_gets(tty_t * tty) {
-    size_t buffer_size = 1;
-    size_t buffer_idx = 0;
-    char * buffer = kmalloc(buffer_size);
+    size_t buf_size = 2;
+    size_t buf_idx = 0;
+    char * buf = (char *)kmalloc(buf_size);
     char c;
 
-    if (!buffer) {
+    if (!buf) {
         KPANIC(KPANIC_OUT_OF_MEMORY, "Memory allocation failed.", NULL);
     }
     while (true) {
@@ -88,26 +89,26 @@ char * tty_gets(tty_t * tty) {
             tty_putchar(tty, '\n');
             break;
         }
-        if (c == ASCII_CTRL_BS && buffer_idx > 0) {
-            buffer_idx--;
-            buffer[buffer_idx] = '\0';
+        if (c == ASCII_CTRL_BS && buf_idx > 0) {
+            buf_idx--;
+            buf[buf_idx] = '\0';
             tty_putchar(tty, c);
             continue;
         }
 
         if (isalnum(c) || c == ASCII_SPACE) {
-            if (buffer_idx == buffer_size) {
-                buffer_size *= 2;
-                buffer = krealloc(buffer, buffer_size);
+            if (buf_idx == buf_size-1) {
+                buf_size *= 2;
+                buf = krealloc(buf, buf_size);
             }
-            buffer[buffer_idx] = c;
-            buffer_idx++;
+            buf[buf_idx] = c;
+            buf_idx++;
             tty_putchar(tty, c);
         }
     }
-    buffer[buffer_idx] = '\0';
+    buf[buf_idx] = '\0';
 
-    return buffer;
+    return buf;
 }
 
 void tty_puts(tty_t * tty, const char * str) {
@@ -141,10 +142,7 @@ void tty_flush(tty_t * tty) {
 }
 
 void tty_render(tty_t * tty, char c) {
-    // TODO:
-    video_device_t * device =
-        (video_device_t *)device_find_by_type(DEVICE_TYPE_VIDEO);
-    device->driver->tm.write(c);
+    tty->video->driver->tm.write(c);
 }
 
 void tty_stream_putchar(stream_t * s, char c) {

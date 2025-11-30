@@ -1,5 +1,8 @@
 #include <drivers/video/vga/vga.h>
 #include <drivers/input/ps2/keyboard.h>
+#include <drivers/pci/pci.h>
+#include <drivers/storage/ata.h>
+#include <drivers/storage/sata.h>
 
 #include <arch/i386/gdt.h>
 #include <arch/i386/idt.h>
@@ -11,7 +14,8 @@
 #include <memory/pmm.h>
 #include <memory/vmm.h>
 #include <memory/heap.h>
-#include <memory/mm_layout.h>
+// #include <memory/mm_layout.h>
+
 #include <device/device.h>
 
 #include <system/message.h>
@@ -39,8 +43,11 @@ void init_kernel(multiboot_info_t * multiboot_info) {
 
     kheap_init();
     device_init();
+
     vga_init(VGA_80x25_16_TEXT);
     ps2_keyboard_init();
+    pci_init();
+    ata_init();
 }
 
 void execute_shell() {

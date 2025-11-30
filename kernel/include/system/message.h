@@ -2,7 +2,7 @@
 #define _KERNEL_SYSTEM_MESSAGE_H
 
 #include <utils/string.h>
-#include <io/stream.h>
+#include <utils/circular_buffer.h>
 
 #define KMESSAGE_LEVEL_PANIC 0
 #define KMESSAGE_LEVEL_INFO 1
@@ -21,6 +21,7 @@ void kmessage_init();
 
 void kmessage(int level, const char * message);
 
-void kmessage_dump(stream_t * stream);
+circular_buffer_t * kmessage_get_log();
+
 
 #endif

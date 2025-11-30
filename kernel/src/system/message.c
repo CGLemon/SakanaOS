@@ -1,12 +1,8 @@
 #include <system/message.h>
 #include <system/panic.h>
 #include <memory/heap.h>
-#include <utils/circular_buffer.h>
 
-#include <drivers/video/vga/vga.h>
-
-circular_buffer_t * kmessage_log_buffer;
-void kmessage_log_stream_gets(kmessage_log_t * log, stream_t * stream);
+static circular_buffer_t * kmessage_log_buffer;
 
 void kmessage_init() {
     kmessage_log_buffer = circular_buffer_create(
@@ -35,27 +31,6 @@ void kmessage(int level, const char * message) {
     circular_buffer_enqueue(kmessage_log_buffer, (void *)log_ptr);
 }
 
-void kmessage_log_stream_gets(kmessage_log_t * log, stream_t * stream) {
-    stream_puts(stream, "[");
-    if (log->level == KMESSAGE_LEVEL_PANIC) {
-        stream_puts(stream, "DEBUG");
-    }
-    if (log->level == KMESSAGE_LEVEL_INFO) {
-        stream_puts(stream, "INFO");
-    }
-    if (log->level == KMESSAGE_LEVEL_WARN) {
-        stream_puts(stream, "WARN");
-    }
-    if (log->level == KMESSAGE_LEVEL_ERROR) {
-        stream_puts(stream, "ERROR");
-    }
-    stream_puts(stream, "] ");
-    stream_puts(stream, log->message);
-    stream_puts(stream, "\n");
-}
-
-void kmessage_dump(stream_t * stream) {
-    circular_buffer_foreach(kmessage_log_buffer) {
-        kmessage_log_stream_gets((kmessage_log_t *)element, stream);
-    } circular_buffer_foreach_end;
+circular_buffer_t * kmessage_get_log() {
+    return kmessage_log_buffer;
 }

@@ -11,8 +11,10 @@ typedef __builtin_va_list va_list;
 
 size_t strlen(const char * str);
 char * strcat(char * dest, const char * src);
-int strcmp(const char* str1, const char* str2);
-char * strcpy(char* dest, const char* src);
+int strcmp(const char* str1, const char * str2);
+char * strcpy(char* dest, const char * src);
+char * strchr(char * str, char c);
+char * strtok(char * str, const char * delim);
 
 char toupper(char c);
 char tolower(char c);
@@ -22,6 +24,8 @@ bool isalnum(char c);
 
 void * memcpy(void * dest, const void * src, size_t n);
 void * memset(void * dest, uint8_t ch, size_t n);
+
+int atoi(char * str);
 
 char * itoa(int n, char * str);
 char * htoa(uint32_t n, char * str);

@@ -109,7 +109,7 @@ static const char keyboard_scancode_ascii_map[] = {
     ASCII_CTRL_NUL
 };
 
-char keyboard_transfer_scancode(uint32_t scancode, keyboard_event_t * event) {
+void keyboard_transfer_scancode(uint32_t scancode, keyboard_event_t * event) {
     event->keycode = ASCII_CTRL_NUL;
     event->pressed = false;
 
@@ -121,4 +121,5 @@ char keyboard_transfer_scancode(uint32_t scancode, keyboard_event_t * event) {
         event->pressed = false;
     }
     event->keycode = tolower(event->keycode);
+    
 }

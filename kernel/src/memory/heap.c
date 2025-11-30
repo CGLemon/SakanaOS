@@ -44,32 +44,12 @@ void kheap_init() {
     kmessage(KMESSAGE_LEVEL_INFO, "memory: Kernel heap initialized");
 }
 
-void kheap_dump(stream_t * stream) {
-    stream_puts(stream, "kheap_enabled: ");
-    if (kheap_enabled) {
-        stream_puts(stream, "True");
-    } else {
-        stream_puts(stream, "False");
-    }
-    stream_puts(stream, "\n");
+bool kheap_is_enabled() {
+    return kheap_enabled;
+}
 
-    int i = 0;
-    size_t allmemory = 0;
-    if (kheap_enabled) {
-        kheap_block_head_t * block = kheap_head;
-        while (block != NULL) {
-            uint32_t m = block->magic;
-            size_t s = block->size;
-            bool f = block->free;
-
-            stream_printf(stream, "[%d] s=%d, f=%d.\n", i, s, f);
-
-            i += 1;
-            allmemory += (s + sizeof(kheap_block_head_t));
-            block = block->next;
-        }
-    }
-    stream_printf(stream, "tot = %x.\n", allmemory);
+kheap_block_head_t * kheap_get_heap_head() {
+    return kheap_head;
 }
 
 void * kmalloc(size_t size) {

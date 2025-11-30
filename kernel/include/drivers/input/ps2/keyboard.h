@@ -7,6 +7,6 @@
 #define PS2_STATUS_REGISTER 0x64
 #define PS2_DATA_REGISTER 0x60
 
-int32_t ps2_keyboard_init();
+int ps2_keyboard_init();
 
 #endif

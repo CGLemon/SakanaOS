@@ -33,12 +33,57 @@ int strcmp(const char* str1, const char* str2) {
 }
 
 char * strcpy(char* dest, const char* src) {
-    char* d = dest;
+    char * d = dest;
     const char* s = src;
 
     while ((*d++ = *s++));
 
     return dest;
+}
+
+char * strchr(char * str, char c) {
+    char * s = str;
+    while (*s != '\0') {
+        if (*s == c) {
+            return s;
+        }
+        s++;
+    }
+    return NULL;
+}
+
+char * strtok(char * str, const char * delim) {
+    static char * s = NULL;
+    char * p;
+    char * r;
+    if (str) {
+        s = str;
+    }
+    if (!s) {
+        return NULL;
+    }
+    p = s;
+
+    while (*p != '\0' && strchr((char *)delim, *p)) {
+        p++;
+    }
+    if (*p == '\0') {
+        s = NULL;
+        return NULL;
+    }
+
+    r = p;
+    while (*p != '\0' && !strchr((char *)delim, *p)) {
+        p++;
+    }
+
+    if (*p == '\0') {
+        s = NULL;
+    } else {
+        *p = '\0';
+        s = p + 1;
+    }
+    return r;
 }
 
 char tolower(char c) {
@@ -86,6 +131,31 @@ void * memset(void * dest, uint8_t ch, size_t n) {
     }
 
     return dest;
+}
+
+int atoi(char *str) {
+    int sign = 1;
+    int result = 0;
+    char *p = str;
+
+    while (*p == ' ' || *p == '\t' || *p == '\n' ||
+           *p == '\r' || *p == '\v' || *p == '\f') {
+        p++;
+    }
+
+    if (*p == '+') {
+        p++;
+    } else if (*p == '-') {
+        sign = -1;
+        p++;
+    }
+
+    while (*p >= '0' && *p <= '9') {
+        result = result * 10 + (*p - '0');
+        p++;
+    }
+
+    return sign * result;
 }
 
 char * itoa(int n, char * str) {
@@ -185,6 +255,7 @@ char * ftoa(double n, char * str, int prec) {
 
 int vsprintf(char * str, const char * fmt, va_list args) {
     char * p = str;
+    char * src;
 
     while (*fmt) {
         if (*fmt == '%') {
@@ -201,7 +272,7 @@ int vsprintf(char * str, const char * fmt, va_list args) {
                     p = ftoa(va_arg(args, double), p, 6);
                     break;
                 case 's':
-                    char * src = va_arg(args, char *);
+                    src = va_arg(args, char *);
                     strcpy(p, src);
                     p += strlen(src);
                     break;

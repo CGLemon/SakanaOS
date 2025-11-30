@@ -5,11 +5,11 @@
 static idt_table_t idt;
 static idt_gate_descriptor_t descriptors[IDT_SIZE];
 
-void idt_init_descriptor(isr_interrupt_t index, uint32_t offset, uint16_t selector, uint8_t flags);
+static void idt_init_descriptor(isr_interrupt_t index, uint32_t offset, uint16_t selector, uint8_t flags);
 extern void idt_flush(uint32_t gdt_ptr);
 
 void idt_init() {
-    for(int index = 0; index < IDT_SIZE; index++) {
+    for (int index = 0; index < IDT_SIZE; index++) {
         descriptors[index].offset_low = 0;
         descriptors[index].selector = 0;
         descriptors[index].unused = 0;
@@ -40,6 +40,19 @@ void idt_init() {
     idt_init_descriptor(ALIGNMENT_CHECK_EXCEPTION, (uint32_t) exc17, 0x08, 0x8E);
     idt_init_descriptor(MACHINE_CHECK_EXCEPTION, (uint32_t) exc18, 0x08, 0x8E);
     idt_init_descriptor(SIMD_FLOATING_POINT_EXCEPTION, (uint32_t) exc19, 0x08, 0x8E);
+
+    idt_init_descriptor(20, (uint32_t) exc20, 0x08, 0x8E);
+    idt_init_descriptor(21, (uint32_t) exc21, 0x08, 0x8E);
+    idt_init_descriptor(22, (uint32_t) exc22, 0x08, 0x8E);
+    idt_init_descriptor(23, (uint32_t) exc23, 0x08, 0x8E);
+    idt_init_descriptor(24, (uint32_t) exc24, 0x08, 0x8E);
+    idt_init_descriptor(25, (uint32_t) exc25, 0x08, 0x8E);
+    idt_init_descriptor(26, (uint32_t) exc26, 0x08, 0x8E);
+    idt_init_descriptor(27, (uint32_t) exc27, 0x08, 0x8E);
+    idt_init_descriptor(28, (uint32_t) exc28, 0x08, 0x8E);
+    idt_init_descriptor(29, (uint32_t) exc29, 0x08, 0x8E);
+    idt_init_descriptor(30, (uint32_t) exc30, 0x08, 0x8E);
+    idt_init_descriptor(31, (uint32_t) exc31, 0x08, 0x8E);
 
     idt_init_descriptor(PROGRAMMABLE_INTERRUPT_TIMER_INTERRUPT, (uint32_t) irq32, 0x08, 0x8E);
     idt_init_descriptor(KEYBOARD_INTERRUPT, (uint32_t) irq33, 0x08, 0x8E);
